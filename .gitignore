@@ -1,0 +1,44 @@
+# Telegram account state and application credentials
+*.session*
+api_credentials.json
+
+# Private exports and downloaded Telegram media
+exports/
+downloads/
+media/
+result.json
+ChatExport*/
+
+# Local secrets, settings, and logs
+.env
+.env.*
+!.env.example
+*.log
+*.log.*
+*.local
+
+# Python environments, caches, and build output
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+build/
+dist/
+*.egg-info/
+
+# Editor and Codex local state
+.idea/
+.vscode/
+.freebuff/
+.codex/
+work/
+
+# Generated release and patch archives
+*-release.zip
+*-patch.zip
+*-update.zip
+*.zip
