@@ -26,7 +26,16 @@ import cli_display
 
 SESSION_NAME = "tg_export_session"
 API_ID_FILE = "api_credentials.json"
-EXPORT_ROOT = "exports"
+def default_export_root():
+    """Use Android shared Downloads on Termux when available, else local exports."""
+    if os.environ.get("TERMUX_VERSION") or "com.termux" in os.environ.get("PREFIX", ""):
+        shared = os.path.expanduser("~/storage/shared/Download")
+        if os.path.isdir(shared) and os.access(shared, os.W_OK):
+            return os.path.join(shared, "EChat")
+    return "exports"
+
+
+EXPORT_ROOT = default_export_root()
 PROXY_ENV = "TELETHON_PROXY"
 
 MENU = """
@@ -374,6 +383,7 @@ def unique_dir(base_root: str, name: str) -> str:
 
 async def run_export(client, dialog, download_media: bool):
     name = dialog.name or "chat"
+    os.makedirs(EXPORT_ROOT, exist_ok=True)
     print(f"\nExporting {name}...")
     out_dir = unique_dir(EXPORT_ROOT, name)
     exporter = ex.Exporter(client, await client.get_me())
