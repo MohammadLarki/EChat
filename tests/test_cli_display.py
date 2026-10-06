@@ -62,5 +62,26 @@ class DialogDisplayTests(unittest.TestCase):
         render.assert_called_once_with([dialog], 1, 40)
 
 
+class ExportPathTests(unittest.TestCase):
+    def test_termux_uses_android_downloads_when_shared_storage_is_ready(self):
+        env = {"TERMUX_VERSION": "0.118", "HOME": "/data/data/com.termux/files/home"}
+        with patch.dict("main.os.environ", env, clear=True), \
+                patch("main.os.path.isdir", return_value=True), \
+                patch("main.os.access", return_value=True):
+            self.assertEqual(
+                "/data/data/com.termux/files/home/storage/shared/Download/EChat",
+                main.default_export_root(),
+            )
+
+    def test_termux_falls_back_when_storage_permission_is_missing(self):
+        with patch.dict("main.os.environ", {"TERMUX_VERSION": "0.118"}, clear=True), \
+                patch("main.os.path.isdir", return_value=False):
+            self.assertEqual("exports", main.default_export_root())
+
+    def test_desktop_keeps_local_exports_folder(self):
+        with patch.dict("main.os.environ", {}, clear=True):
+            self.assertEqual("exports", main.default_export_root())
+
+
 if __name__ == "__main__":
     unittest.main()
